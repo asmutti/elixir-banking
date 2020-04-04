@@ -16,7 +16,9 @@ defmodule StnAccount do
 
   ## Examples
 
-    iex> StnAccount.create("85718312036")
+    iex> account = StnAccount.create("85718312036")
+    iex> account
+    %{balance: %Money{amount: 0, currency: :BRL}, tax_id: "85718312036", transactions: []}
 
   """
   def create(tax_id) do
@@ -27,5 +29,21 @@ defmodule StnAccount do
     balance = Money.new(0, :BRL)
 
     %{tax_id: tax_id, balance: balance, transactions: []}
+  end
+
+  @doc """
+  Returns the current account balance from a given account.
+
+  ## Examples
+    iex> account = StnAccount.create("85718312036")
+    iex> balance = StnAccount.get_balance(account)
+    iex> balance
+    0
+
+  """
+  @spec get_balance(map) :: any
+  def get_balance(account) do
+    Map.get(account, :balance)
+    |> Map.get(:amount)
   end
 end
