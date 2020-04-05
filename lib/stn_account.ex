@@ -32,6 +32,19 @@ defmodule StnAccount do
   end
 
   @doc """
+    Creates a new account and immediately deposits an inital amount.
+
+    ## Examples
+      iex> account = StnAccount.create_and_deposit("85718312036", 500)
+      iex> account.balance
+      %Money{amount: 500, currency: :BRL}
+  """
+  def create_and_deposit(tax_id, initial_amount) do
+    create(tax_id)
+    |> StnAccount.Transaction.deposit(initial_amount)
+  end
+
+  @doc """
   Returns the current account balance from a given account.
 
   ## Examples
