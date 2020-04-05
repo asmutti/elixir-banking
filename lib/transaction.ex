@@ -74,4 +74,31 @@ defmodule StnAccount.Transaction do
       |> Map.put(:transactions, dest_account.transactions ++ [dest_transaction])
 
     end
+
+    @doc """
+      Withdraws money from a given account.
+
+      ## Examples
+
+        iex> account = StnAccount.create_and_deposit("85718312036", 500)
+        iex> account = StnAccount.Transaction.withdraw(account, 100)
+        iex> account.balance
+        %Money{amount: 400, currency: :BRL}
+
+    """
+    def withdraw(account, amount) do
+      unless amount > 0 do
+        raise(ArgumentError, "The amount to withdraw should be greater than zero.")
+      end
+
+      unless StnAccount.get_balance(account) >= amount do
+        raise(ArgumentError, "The account does not have enough funds to withdraw.")
+      end
+
+      withdraw_transaction = create_transaction(-amount)
+
+      account
+      |> Map.put(:balance, Money.add(account.balance, withdraw_transaction.amount))
+      |> Map.put(:transactions, account.transactions ++ [withdraw_transaction])
+    end
 end
