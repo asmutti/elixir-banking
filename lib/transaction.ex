@@ -35,9 +35,7 @@ defmodule StnAccount.Transaction do
 
       transaction = create_transaction(amount)
 
-      account
-      |> Map.put(:balance, Money.add(account.balance, transaction.amount))
-      |> Map.put(:transactions, account.transactions ++ [transaction])
+      process_transaction(account, transaction)
     end
 
     @doc """
@@ -65,14 +63,15 @@ defmodule StnAccount.Transaction do
       origin_transaction = create_transaction(-amount)
       dest_transaction = create_transaction(amount)
 
-      origin_account
-      |> Map.put(:balance, Money.add(origin_account.balance, origin_transaction.amount))
-      |> Map.put(:transactions, origin_account.transactions ++ [origin_transaction])
+      process_transaction(origin_account, origin_transaction)
 
-      dest_account
-      |> Map.put(:balance, Money.add(dest_account.balance, dest_transaction.amount))
-      |> Map.put(:transactions, dest_account.transactions ++ [dest_transaction])
+      process_transaction(dest_account, dest_transaction)
+    end
 
+    defp process_transaction(account, transaction) do
+      account
+      |> Map.put(:balance, Money.add(account.balance, transaction.amount))
+      |> Map.put(:transactions, account.transactions ++ [transaction])
     end
 
     @doc """
@@ -97,9 +96,7 @@ defmodule StnAccount.Transaction do
 
       withdraw_transaction = create_transaction(-amount)
 
-      account
-      |> Map.put(:balance, Money.add(account.balance, withdraw_transaction.amount))
-      |> Map.put(:transactions, account.transactions ++ [withdraw_transaction])
+      process_transaction(account, withdraw_transaction)
     end
 
     @doc """
@@ -122,9 +119,7 @@ defmodule StnAccount.Transaction do
 
       exchange_transaction = create_transaction(brl_amount.amount)
 
-      account
-      |> Map.put(:balance, Money.add(account.balance, exchange_transaction.amount))
-      |> Map.put(:transactions, account.transactions ++ [exchange_transaction])
+      process_transaction(account, exchange_transaction)
     end
 
     @doc """
