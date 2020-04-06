@@ -101,4 +101,46 @@ defmodule StnAccount.Transaction do
       |> Map.put(:balance, Money.add(account.balance, withdraw_transaction.amount))
       |> Map.put(:transactions, account.transactions ++ [withdraw_transaction])
     end
+
+    @doc """
+      Deposits an amount on foreign currency. The amount gets converted into
+      :BRL currency and then deposited.
+
+      @@ Examples
+
+        iex> account = StnAccount.create_and_deposit("85718312036", 500)
+        iex> account = StnAccount.Transaction.deposit_foreign_currency(account, 100, :USD, 5.3)
+        iex> account.balance
+        %Money{amount: 1030, currency: :BRL}
+    """
+    def deposit_foreign_currency(account, amount, currency, rate) do
+      unless rate > 0 && amount > 0 && is_atom(currency) do
+        raise(ArgumentError, message: "Wrong input.")
+      end
+
+      brl_amount = exchange(amount, currency, rate)
+
+      exchange_transaction = create_transaction(brl_amount.amount)
+
+      account
+      |> Map.put(:balance, Money.add(account.balance, exchange_transaction.amount))
+      |> Map.put(:transactions, account.transactions ++ [exchange_transaction])
+    end
+
+    @doc """
+      Exchanges a foreign currency into :BRL currency.
+
+      ## Examples
+
+        iex> usd_to_brl = StnAccount.Transaction.exchange(100, :USD, 5.3)
+        iex> usd_to_brl.amount
+        530
+    """
+    def exchange(amount, currency, rate) do
+      foreign_amount = Money.new(amount, currency)
+
+      brl_amount = Money.multiply(foreign_amount, rate)
+
+      Money.new(brl_amount.amount, :BRL)
+    end
 end
