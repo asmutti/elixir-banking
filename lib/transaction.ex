@@ -158,9 +158,6 @@ defmodule StnAccount.Transaction do
     each account needs an value `share` as the percentage of the total amount to be
     split.
 
-    In case `origin_account` is nil, the function assumes that the money is originated from
-    an external source.
-
     The `dest_account` is a list of accounts.
     The `shares` is a list of percentage shares.
 
@@ -184,9 +181,7 @@ defmodule StnAccount.Transaction do
 
     verify_shares(shares)
 
-    if origin_account == nil do
-      withdraw(origin_account, amount)
-    end
+    withdraw(origin_account, amount)
 
     Enum.map(Enum.with_index(dest_accounts), fn {acc, s} ->
       StnAccount.Transaction.deposit(acc, round(amount * Enum.at(shares, s)))
