@@ -63,7 +63,11 @@ defmodule StnAccount do
 
   """
   @spec get_balance(map) :: any
-  def get_balance(account) do
+  def get_balance(account) when is_map(account) do
+    unless Map.has_key?(account, :balance) do
+      raise(ArgumentError, message: "This account is invalid.")
+    end
+
     Map.get(account, :balance)
     |> Map.get(:amount)
   end
