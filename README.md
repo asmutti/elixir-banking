@@ -30,7 +30,7 @@ After all dependencies are installed, you can run all the commands listed down:
 ## Dependencies
 
 * [uuid](https://github.com/zyro/elixir-uuid)
-* [Money](https://github.com/elixirmoney/moneyk)
+* [Money](https://github.com/elixirmoney/money)
 * [ExDoc](https://github.com/elixir-lang/ex_doc)
 * [ExCoveralls](https://github.com/parroty/excoveralls)
 
