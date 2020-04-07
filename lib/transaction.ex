@@ -142,4 +142,49 @@ defmodule StnAccount.Transaction do
 
       Money.new(brl_amount.amount, :BRL)
     end
+
+        @doc """
+      Method deposits an given amount to one or many accounts,
+      each account needs an value `share` as the percentage of the total amount to be
+      split.
+
+      In case `origin_account` is nil, the function assumes that the money is originated from
+      an external source.
+
+      The `dest_account` is a list of accounts.
+      The `shares` is a list of percentage shares.
+
+      The number of `dest_account` and `shares` should be equal.
+      The sum of all items in the `shares` list should be equal to 1.0.
+
+      ## Examples
+
+        iex> account1 = StnAccount.create_and_deposit("85718312036", 500)
+        iex> account2 = StnAccount.create_and_deposit("85718312036", 500)
+        iex> account_origin = StnAccount.create_and_deposit("85718312036", 2000)
+        iex> accounts = StnAccount.Transaction.split_deposit(account_origin, [account1, account2], [0.4, 0.6], 2000)
+        iex> account1 = Enum.at(accounts, 0)
+        iex> account1.balance
+        %Money{amount: 1300, currency: :BRL}
+    """
+    def split_deposit(origin_account, dest_accounts, shares, amount) when is_list(dest_accounts) do
+      unless length(dest_accounts) == length(shares) do
+        raise(ArgumentError, message: "The number of account should match the number of shares")
+      end
+
+      verify_shares(shares)
+
+      if origin_account == nil do
+        withdraw(origin_account, amount)
+      end
+
+      Enum.map(Enum.with_index(dest_accounts), fn {acc, s} -> StnAccount.Transaction.deposit(acc, round(amount * Enum.at(shares, s))) end)
+
+    end
+
+    defp verify_shares(shares) do
+      unless Enum.sum(shares) == 1.0 do
+        raise(ArgumentError, message: "The sum of all shares must be equal to one.")
+      end
+    end
 end
