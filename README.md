@@ -6,9 +6,9 @@ The project is part of `some company` hiring process.
 
 ## Project
 
-The project uses a dependency in its core, called Money. The library that handles the creation of the [Money](https://github.com/elixirmoney/money) attribute of every StnAccount. Travis handles the continuous integration. The library Money is the solution to have all transactions in compliance to the [ISO 4217](https://pt.wikipedia.org/wiki/ISO_4217) as requested as requiriment.
+The project uses a dependency in its core, called Money. The library that handles the creation of the [Money](https://github.com/elixirmoney/money) attribute of every StnAccount. Travis handles the continuous integration. The library Money is the solution deal with transactions in compliance to the [ISO 4217](https://pt.wikipedia.org/wiki/ISO_4217) as requested as requirement.
 
-There are two structs definied in the project, account and transaction. Account has an unique identifier called tax_id, which translates into the CPF in Brazil or SSN in US. Account has also an amount, which is an Money struct and also an collection of transactions.
+There are two structs definied in the project, account and transaction. Account has an unique identifier called tax_id, which translates into the CPF in Brazil or SSN in US. Account has also an amount, which is a Money struct and also an collection of transactions.
 
 Every account has a collection of transactions. Every transaction has a uuid, date, amount and type. Every transaction is added to the collection in the Account struct.
 
@@ -16,7 +16,7 @@ Every account has a collection of transactions. Every transaction has a uuid, da
 
 You need Elixir installed on you system. [Elixir Installation](https://elixir-lang.org/install.html)
 
-After downloading the project, run:
+After downloading the project run:
 `mix deps.get`
 
 After all dependencies are installed, you can run all the commands listed down:
