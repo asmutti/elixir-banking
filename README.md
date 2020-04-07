@@ -1,4 +1,4 @@
-# StnAccount - a financial system. [![Build Status](https://travis-ci.org/asmutti/elixir-banking.svg?branch=master)](https://travis-ci.org/asmutti/elixir-banking)
+# StnAccount - a financial system. [![Build Status](https://travis-ci.org/asmutti/elixir-banking.svg?branch=master)](https://travis-ci.org/asmutti/elixir-banking) [![Coverage Status](https://coveralls.io/repos/github/asmutti/elixir-banking/badge.svg?branch=master)](https://coveralls.io/github/asmutti/elixir-banking?branch=master)
 
 The StnAccount is a software that can create accounts and handle various types of transactions, including exchange transactions and split deposits. All accounts created by the system are BRL accounts. The account supports deposit of foreign currencies, providing its exchange rate at the moment of the deposit.
 
