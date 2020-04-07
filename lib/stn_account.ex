@@ -22,13 +22,21 @@ defmodule StnAccount do
 
   """
   def create(tax_id) do
-    unless is_binary(tax_id) && String.length(tax_id) == 11 do
+    unless is_binary(tax_id) do
+      raise(ArgumentError, message: "User has to provide a CPF.")
+    end
+
+    unless String.length(tax_id) == 11 && check_cpf(tax_id) do
       raise(ArgumentError, message: "Invalid CPF.")
     end
 
     balance = Money.new(0, :BRL)
 
     %{tax_id: tax_id, balance: balance, transactions: []}
+  end
+
+  defp check_cpf(cpf) do
+    Regex.match?(~r{\A\d*\z}, cpf)
   end
 
   @doc """
@@ -55,25 +63,12 @@ defmodule StnAccount do
 
   """
   @spec get_balance(map) :: any
-  def get_balance(account) do
+  def get_balance(account) when is_map(account) do
+    unless Map.has_key?(account, :balance) do
+      raise(ArgumentError, message: "This account is invalid.")
+    end
+
     Map.get(account, :balance)
     |> Map.get(:amount)
-  end
-
-  @doc """
-    Exchanges a foreign currency into :BRL currency.
-
-    ## Examples
-
-      iex> usd_to_brl = StnAccount.Transaction.exchange(100, :USD, 5.3)
-      iex> usd_to_brl.amount
-      530
-  """
-  def exchange(amount, currency, rate) do
-    foreign_amount = Money.new(amount, currency)
-
-    brl_amount = Money.multiply(foreign_amount, rate)
-
-    Money.new(brl_amount.amount, :BRL)
   end
 end
