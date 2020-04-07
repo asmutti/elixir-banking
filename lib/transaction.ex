@@ -3,17 +3,21 @@ defmodule StnAccount.Transaction do
   Documentation for Transaction module.
   """
 
-  defstruct [:id, :amount, :date]
+  defstruct [:id, :amount, :date, :type]
 
     @typedoc "Custom type to represent transfers."
     @type t :: %__MODULE__{
       id: UUID.t(),
       amount: Money.t(),
-      date: NaiveDateTime.t()
+      date: NaiveDateTime.t(),
+      type: Atom.t()
     }
 
-    defp create_transaction(amount) do
-      %{id: UUID.uuid1(), amount: Money.new(amount, :BRL), date: NaiveDateTime.utc_now()}
+    defp create_transaction(amount, type) do
+      unless amount != 0 && is_atom(type) do
+        raise(ArgumentError, message: "invalid parameters.")
+      end
+      %{id: UUID.uuid1(), amount: Money.new(amount, :BRL), date: NaiveDateTime.utc_now(), type: type}
     end
 
   @doc """
@@ -33,7 +37,7 @@ defmodule StnAccount.Transaction do
         raise(ArgumentError, message: "The amount to deposit should be higher than zero.")
       end
 
-      transaction = create_transaction(amount)
+      transaction = create_transaction(amount, :deposit)
 
       process_transaction(account, transaction)
     end
@@ -60,8 +64,8 @@ defmodule StnAccount.Transaction do
         raise(ArgumentError, message: "Not enough funds to transfer.")
       end
 
-      origin_transaction = create_transaction(-amount)
-      dest_transaction = create_transaction(amount)
+      origin_transaction = create_transaction(-amount, :transfer)
+      dest_transaction = create_transaction(amount, :transfer)
 
       process_transaction(origin_account, origin_transaction)
 
@@ -94,7 +98,7 @@ defmodule StnAccount.Transaction do
         raise(ArgumentError, "The account does not have enough funds to withdraw.")
       end
 
-      withdraw_transaction = create_transaction(-amount)
+      withdraw_transaction = create_transaction(-amount, :withdraw)
 
       process_transaction(account, withdraw_transaction)
     end
@@ -117,7 +121,7 @@ defmodule StnAccount.Transaction do
 
       brl_amount = exchange(amount, currency, rate)
 
-      exchange_transaction = create_transaction(brl_amount.amount)
+      exchange_transaction = create_transaction(brl_amount.amount, :exchange)
 
       process_transaction(account, exchange_transaction)
     end
