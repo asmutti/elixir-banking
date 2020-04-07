@@ -142,6 +142,10 @@ defmodule StnAccount.Transaction do
       530
   """
   def exchange(amount, currency, rate) do
+    unless amount > 0 && is_atom(currency) && rate > 0 do
+      raise(ArgumentError, message: "Wrong input.")
+    end
+
     foreign_amount = Money.new(amount, currency)
 
     brl_amount = Money.multiply(foreign_amount, rate)
