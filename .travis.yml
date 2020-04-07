@@ -3,3 +3,4 @@ elixir:
   - '1.9'
 env: 
   - MIX_ENV=test
+script: mix coveralls.travis
