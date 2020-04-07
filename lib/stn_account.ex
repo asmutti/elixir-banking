@@ -22,13 +22,21 @@ defmodule StnAccount do
 
   """
   def create(tax_id) do
-    unless is_binary(tax_id) && String.length(tax_id) == 11 do
+    unless is_binary(tax_id) do
+      raise(ArgumentError, message: "User has to provide a CPF.")
+    end
+
+    unless String.length(tax_id) == 11 && check_cpf(tax_id) do
       raise(ArgumentError, message: "Invalid CPF.")
     end
 
     balance = Money.new(0, :BRL)
 
     %{tax_id: tax_id, balance: balance, transactions: []}
+  end
+
+  defp check_cpf(cpf) do
+    Regex.match?(~r{\A\d*\z}, cpf)
   end
 
   @doc """
